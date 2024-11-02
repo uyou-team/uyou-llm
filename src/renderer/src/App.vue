@@ -14,6 +14,7 @@ interface chatListItem {
 }
 
 const text = ref('')
+const oldList = reactive([])
 
 const chatList: Array<chatListItem> = reactive([
   {
@@ -26,6 +27,8 @@ const chat = (): void => {
     me: true,
     msg: text.value
   })
+
+  const oldMeText = text.value
 
   setTimeout(() => {
     body.value.lastElementChild.scrollIntoView()
@@ -45,6 +48,7 @@ const chat = (): void => {
       model,
       messages: [
         { role: 'system', content: systemPro ? systemPro : '' },
+        ...oldList,
         { role: 'user', content: text.value }
       ],
       temperature: 0.7,
@@ -54,6 +58,7 @@ const chat = (): void => {
     })
   })
     .then((response) => {
+      oldList.push({ role: 'user', content: oldMeText })
       text.value = ''
       return response.json()
     })
@@ -69,6 +74,7 @@ const chat = (): void => {
         me: false,
         msg: data.choices[0].message.content
       })
+      oldList.push({ role: 'assistant', content: data.choices[0].message.content })
     })
     .then(() => {
       body.value.lastElementChild.scrollIntoView()

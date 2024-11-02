@@ -72,14 +72,14 @@ const openInfo = (): void => {
     @cancel="alertShow = !alertShow"
     @return="returnClick"
   >
-    <div v-if="!isInfo" class="flex items-center w-max">
+    <div v-if="!isInfo" class="flex items-center w-max mb-2">
       <span class="mr-2">Api Link:</span>
       <input
         v-model="key"
         class="border border-2 rounded dark:bg-gray-500/50 dark:text-white dark:border-gray-700/30 p-1"
       />
     </div>
-    <div v-if="!isInfo" class="flex items-center w-max">
+    <div v-if="!isInfo" class="flex items-center w-max mb-2">
       <span class="mr-2">Model:</span>
       <select
         v-model="model"
