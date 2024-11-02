@@ -1,2 +1,2 @@
 # uyou-chatgpt
- An Electron application with ChatGPT
+ An Electron application with Ollama

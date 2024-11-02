@@ -17,6 +17,7 @@ function createWindow(): void {
     maximizable: false,
     show: false,
     autoHideMenuBar: true,
+    vibrancy: 'menu',
     ...(process.platform === 'linux'
       ? { icon }
       : process.platform === 'win32'
