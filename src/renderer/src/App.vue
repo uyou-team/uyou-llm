@@ -32,18 +32,25 @@ const chat = (): void => {
     text.value = t('getting')
   }, 100)
 
-  const apiKey = localStorage.getItem('key')
+  const apiLink = localStorage.getItem('key')
+  const model = localStorage.getItem('model')
+  const systemPro = localStorage.getItem('sysPro')
 
-  fetch('https://api.openai.com/v1/engines/gpt-3.5-turbo/completions', {
+  fetch(`${apiLink}/v1/chat/completions`, {
     method: 'POST',
     headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${apiKey}`
+      'Content-Type': 'application/json'
     },
     body: JSON.stringify({
-      prompt: text.value,
-      max_tokens: 1000,
-      temperature: 0
+      model,
+      messages: [
+        { role: 'system', content: systemPro ? systemPro : '' },
+        { role: 'user', content: text.value }
+      ],
+      temperature: 0.7,
+      top_p: 0.8,
+      repetition_penalty: 1.05,
+      max_tokens: 512
     })
   })
     .then((response) => {

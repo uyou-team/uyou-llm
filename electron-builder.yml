@@ -1,5 +1,5 @@
-appId: com.electron.app
-productName: uyou-electron
+appId: cn.org.uyou.llm
+productName: uyou llm
 directories:
   buildResources: build
 files:
@@ -12,7 +12,7 @@ asarUnpack:
   - resources/*
 afterSign: build/notarize.js
 win:
-  executableName: uyou-electron
+  executableName: uyou-llm
 nsis:
   artifactName: ${name}-${version}-setup.${ext}
   shortcutName: ${productName}

@@ -1,8 +1,27 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import Alert from '../Alert/Alert.vue'
+import { watchTriggerable } from '@vueuse/core'
 
-const key = ref('')
+const key = ref(localStorage.getItem('key') ? localStorage.getItem('key') : '')
+const model = ref(localStorage.getItem('model') ? localStorage.getItem('model') : '')
+const systemPrompt = ref(localStorage.getItem('sysPro') ? localStorage.getItem('sysPro') : '')
+
+const models = ref([])
+
+watchTriggerable(
+  key,
+  (newValue) => {
+    if (newValue !== '') {
+      fetch(`${newValue}/api/tags`)
+        .then((res) => res.json())
+        .then((data) => {
+          models.value = data.models
+        })
+    }
+  },
+  { immediate: true }
+)
 
 const alertShow = ref(false)
 
@@ -18,6 +37,9 @@ const returnClick = (): void => {
   }
   isInfo.value = false
   localStorage.setItem('key', key.value)
+  localStorage.setItem('model', model.value)
+  localStorage.setItem('sysPro', systemPrompt.value)
+  window.title = `uyou llm - ${model.value}`
 }
 
 const isInfo = ref(false)
@@ -35,7 +57,7 @@ const openInfo = (): void => {
     >
       <span class="material-icons dark:text-white/70"> settings </span>
     </div>
-    <span class="dark:text-white/70">uyou ChatGPT</span>
+    <span class="dark:text-white/70">uyou llm - {{ model }}</span>
     <div
       class="hover:bg-black/10 cursor-pointer w-8 h-8 flex justify-center items-center rounded-2xl"
       @click="openInfo"
@@ -51,9 +73,26 @@ const openInfo = (): void => {
     @return="returnClick"
   >
     <div v-if="!isInfo" class="flex items-center w-max">
-      <span class="mr-2">Api Key:</span>
+      <span class="mr-2">Api Link:</span>
       <input
         v-model="key"
+        class="border border-2 rounded dark:bg-gray-500/50 dark:text-white dark:border-gray-700/30 p-1"
+      />
+    </div>
+    <div v-if="!isInfo" class="flex items-center w-max">
+      <span class="mr-2">Model:</span>
+      <select
+        v-model="model"
+        name="model"
+        class="border border-2 rounded dark:bg-gray-500/50 dark:text-white dark:border-gray-700/30 p-1"
+      >
+        <option v-for="m in models" :key="m.model" :value="m.model">{{ m.name }}</option>
+      </select>
+    </div>
+    <div v-if="!isInfo" class="flex items-center w-max">
+      <span class="mr-2">system prompt:</span>
+      <input
+        v-model="systemPrompt"
         class="border border-2 rounded dark:bg-gray-500/50 dark:text-white dark:border-gray-700/30 p-1"
       />
     </div>
