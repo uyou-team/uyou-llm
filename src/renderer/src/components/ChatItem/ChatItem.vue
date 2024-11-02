@@ -13,25 +13,27 @@ withDefaults(
 </script>
 
 <template>
-  <div v-if="isMe" class="flex w-screen px-2 py-1">
+  <div v-if="isMe" class="flex w-[calc(100vw-56px)] pr-2 py-1 justify-end ml-[56px]">
     <div
-      class="flex-1 bg-cyan-500 rounded-lg p-2 overflow-auto h-auto text-right dark:bg-cyan-900 dark:text-white/70"
+      class="bg-cyan-500 rounded-md rounded-tr-xl p-3 overflow-auto h-auto text-right dark:bg-cyan-900 dark:text-white/70 w-auto max-w-[calc(100vw-112px)] shadow-md shadow-cyan-700/10"
     >
       <span class="w-10 whitespace-normal break-words text-white">{{ msg }}</span>
     </div>
     <div class="w-10 ml-2 rounded-lg">
       <img
-        class="rounded-lg dark:bg-gary-500/50 bg-white/50"
-        src="../../assets/user.png"
+        class="rounded-full dark:bg-gary-500/50 bg-white/50"
+        src="../../assets/user.jpg"
         alt="me"
       />
     </div>
   </div>
-  <div v-else class="flex w-screen px-2 py-1">
+  <div v-else class="flex w-[calc(100%-56x)] pl-2 py-1">
     <div class="w-10 mr-2">
-      <img class="rounded-lg" src="../../assets/ChatGPT_logo.svg.webp" alt="chatGPT" />
+      <img class="rounded-full" src="../../assets/logo.png" alt="chatGPT" />
     </div>
-    <div class="flex-1 bg-white rounded-lg p-2 overflow-auto h-auto dark:bg-gray-500/50">
+    <div
+      class="bg-white rounded-md rounded-tl-xl p-3 overflow-auto h-auto dark:bg-gray-500/50 w-auto max-w-[calc(100vw-112px)] shadow-md shadow-black/10"
+    >
       <Markdown :source="msg" class="dark:text-white/70 select-text" />
     </div>
   </div>

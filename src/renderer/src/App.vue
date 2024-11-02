@@ -15,6 +15,7 @@ interface chatListItem {
 
 const text = ref('')
 const oldList = reactive([])
+const inputDisabled = ref(false)
 
 const chatList: Array<chatListItem> = reactive([
   {
@@ -32,6 +33,7 @@ const chat = (): void => {
 
   setTimeout(() => {
     body.value.lastElementChild.scrollIntoView()
+    inputDisabled.value = true
     text.value = t('getting')
   }, 100)
 
@@ -75,6 +77,7 @@ const chat = (): void => {
         msg: data.choices[0].message.content
       })
       oldList.push({ role: 'assistant', content: data.choices[0].message.content })
+      inputDisabled.value = false
     })
     .then(() => {
       body.value.lastElementChild.scrollIntoView()
@@ -100,6 +103,7 @@ const chat = (): void => {
     >
       <input
         v-model="text"
+        :disabled="inputDisabled"
         class="flex-1 p-2 rounded-lg dark:bg-gray-500/50 dark:text-white"
         @keydown.enter="chat"
       />

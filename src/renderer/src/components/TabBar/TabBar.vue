@@ -50,19 +50,22 @@ const openInfo = (): void => {
 </script>
 
 <template>
-  <div class="flex justify-between p-2 items-center">
-    <div
-      class="hover:bg-black/10 cursor-pointer w-8 h-8 flex justify-center items-center rounded-2xl"
-      @click="showAlert"
-    >
-      <span class="material-icons dark:text-white/70"> settings </span>
-    </div>
-    <span class="dark:text-white/70">uyou llm - {{ model }}</span>
-    <div
-      class="hover:bg-black/10 cursor-pointer w-8 h-8 flex justify-center items-center rounded-2xl"
-      @click="openInfo"
-    >
-      <span class="material-icons dark:text-white/70"> info </span>
+  <div>
+    <div class="h-5 w-full drag"></div>
+    <div class="flex justify-between p-2 items-center drag">
+      <div
+        class="hover:bg-black/10 cursor-pointer w-8 h-8 flex justify-center items-center rounded-2xl no-drag"
+        @click="showAlert"
+      >
+        <span class="material-icons dark:text-white/70"> settings </span>
+      </div>
+      <span class="dark:text-white/70">uyou llm - {{ model }}</span>
+      <div
+        class="hover:bg-black/10 cursor-pointer w-8 h-8 flex justify-center items-center rounded-2xl no-drag"
+        @click="openInfo"
+      >
+        <span class="material-icons dark:text-white/70"> info </span>
+      </div>
     </div>
   </div>
   <Alert
@@ -96,6 +99,6 @@ const openInfo = (): void => {
         class="border border-2 rounded dark:bg-gray-500/50 dark:text-white dark:border-gray-700/30 p-1"
       />
     </div>
-    <span v-else>create by chatGPT with openai</span>
+    <span v-else>create for Ollama</span>
   </Alert>
 </template>

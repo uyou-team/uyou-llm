@@ -18,6 +18,8 @@ function createWindow(): void {
     show: false,
     autoHideMenuBar: true,
     vibrancy: 'menu',
+    titleBarStyle: 'hidden',
+    frame: false,
     ...(process.platform === 'linux'
       ? { icon }
       : process.platform === 'win32'
