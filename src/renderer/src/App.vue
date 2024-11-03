@@ -3,7 +3,7 @@ import TabBar from './components/TabBar/TabBar.vue'
 import ChatItem from './components/ChatItem/ChatItem.vue'
 import { reactive, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { Ollama } from 'ollama'
+import { Ollama } from 'ollama/browser'
 
 const { t } = useI18n()
 
