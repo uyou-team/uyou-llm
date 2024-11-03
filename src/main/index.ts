@@ -20,7 +20,7 @@ function createWindow(): void {
     show: false,
     autoHideMenuBar: true,
     vibrancy: 'menu',
-    titleBarStyle: 'hidden',
+    titleBarStyle: isMac ? 'hidden' : 'default',
     frame: !isMac,
     ...(process.platform === 'linux'
       ? { icon }
