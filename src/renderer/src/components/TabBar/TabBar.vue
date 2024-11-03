@@ -47,11 +47,13 @@ const openInfo = (): void => {
   isInfo.value = true
   alertShow.value = true
 }
+
+const isMac = navigator.userAgent.includes('Mac')
 </script>
 
 <template>
   <div>
-    <div class="h-5 w-full drag"></div>
+    <div v-if="isMac" class="h-5 w-full drag"></div>
     <div class="flex justify-between p-2 items-center drag">
       <div
         class="hover:bg-black/10 cursor-pointer w-8 h-8 flex justify-center items-center rounded-2xl no-drag"

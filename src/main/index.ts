@@ -7,6 +7,8 @@ import macIcon from '../../build/icon.icns?asset'
 import { MicaBrowserWindow, IS_WINDOWS_11 } from 'mica-electron'
 
 function createWindow(): void {
+  const isMac = process.platform === 'darwin'
+
   // Create the browser window.
   const mainWindow = new MicaBrowserWindow({
     width: 350,
@@ -19,7 +21,7 @@ function createWindow(): void {
     autoHideMenuBar: true,
     vibrancy: 'menu',
     titleBarStyle: 'hidden',
-    frame: false,
+    frame: !isMac,
     ...(process.platform === 'linux'
       ? { icon }
       : process.platform === 'win32'
