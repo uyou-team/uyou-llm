@@ -3,6 +3,7 @@ import TabBar from './components/TabBar/TabBar.vue'
 import ChatItem from './components/ChatItem/ChatItem.vue'
 import { reactive, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { Ollama } from 'ollama'
 
 const { t } = useI18n()
 
@@ -23,11 +24,18 @@ const chatList: Array<chatListItem> = reactive([
     msg: t('hello') + (localStorage.getItem('key') ? '' : `(${t('plzSetApi')})`)
   }
 ])
-const chat = (): void => {
+
+let systemPro = localStorage.getItem('sysPro')
+
+const chat = async (): void => {
   chatList.push({
     me: true,
     msg: text.value
   })
+  body.value.lastElementChild.scrollIntoView()
+
+  const apiLink = ref(localStorage.getItem('key'))
+  const ollama = new Ollama({ host: apiLink.value })
 
   const oldMeText = text.value
 
@@ -37,58 +45,32 @@ const chat = (): void => {
     text.value = t('getting')
   }, 100)
 
-  const apiLink = localStorage.getItem('key')
   const model = localStorage.getItem('model')
-  const systemPro = localStorage.getItem('sysPro')
+  systemPro = localStorage.getItem('sysPro')
+  const useMsg = ref('')
 
-  fetch(`${apiLink}/v1/chat/completions`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({
-      model,
-      messages: [
-        { role: 'system', content: systemPro ? systemPro : '' },
-        ...oldList,
-        { role: 'user', content: text.value }
-      ],
-      temperature: 0.7,
-      top_p: 0.8,
-      repetition_penalty: 1.05,
-      max_tokens: 512
-    })
+  const response = await ollama.chat({
+    model: model,
+    messages: [
+      { role: 'system', content: systemPro ? systemPro : '' },
+      ...oldList,
+      { role: 'user', content: oldMeText }
+    ],
+    stream: true
   })
-    .then((response) => {
-      oldList.push({ role: 'user', content: oldMeText })
-      text.value = ''
-      return response.json()
-    })
-    .then((data) => {
-      if (data.hasOwnProperty!('error')) {
-        text.value = '获取内容失败'
-        setTimeout(() => {
-          text.value = ''
-        }, 1000)
-        return
-      }
-      chatList.push({
-        me: false,
-        msg: data.choices[0].message.content
-      })
-      oldList.push({ role: 'assistant', content: data.choices[0].message.content })
-      inputDisabled.value = false
-    })
-    .then(() => {
-      body.value.lastElementChild.scrollIntoView()
-    })
-    .catch((error) => {
-      text.value = '获取内容失败'
-      setTimeout(() => {
-        text.value = ''
-      }, 1000)
-      console.error(error)
-    })
+  oldList.push({ role: 'user', content: oldMeText })
+  chatList.push({
+    me: false,
+    msg: ''
+  })
+  for await (const part of response) {
+    useMsg.value += part.message.content
+    chatList[chatList.length - 1].msg = useMsg.value
+    body.value.lastElementChild.scrollIntoView()
+  }
+  oldList.push({ role: 'assistant', content: useMsg.value })
+  text.value = ''
+  inputDisabled.value = false
 }
 </script>
 
@@ -96,6 +78,7 @@ const chat = (): void => {
   <div class="flex flex-col h-screen">
     <tab-bar />
     <div ref="body" class="overflow-scroll flex-1 scroll-smooth pb-1">
+      <chat-item v-if="systemPro" :is-sys="true" :msg="systemPro" />
       <chat-item v-for="(item, index) in chatList" :key="index" :msg="item.msg" :is-me="item.me" />
     </div>
     <div
@@ -104,7 +87,7 @@ const chat = (): void => {
       <input
         v-model="text"
         :disabled="inputDisabled"
-        class="flex-1 p-2 rounded-lg dark:bg-gray-500/50 dark:text-white"
+        class="flex-1 p-2 rounded-lg dark:bg-gray-500/50 dark:text-white outline-cyan-500"
         @keydown.enter="chat"
       />
       <div

@@ -23,7 +23,7 @@ watchTriggerable(
   { immediate: true }
 )
 
-const alertShow = ref(false)
+const alertShow = ref(!localStorage.getItem('key'))
 
 const showAlert = (): void => {
   isInfo.value = false
@@ -79,7 +79,7 @@ const openInfo = (): void => {
       <span class="mr-2">Api Link:</span>
       <input
         v-model="key"
-        class="border-2 rounded dark:bg-gray-500/50 dark:text-white dark:border-gray-700/30 p-1"
+        class="border-2 rounded dark:bg-gray-500/50 dark:text-white dark:border-gray-700/30 p-1 outline-cyan-500"
       />
     </div>
     <div v-if="!isInfo" class="flex items-center w-max mb-2">
@@ -87,7 +87,7 @@ const openInfo = (): void => {
       <select
         v-model="model"
         name="model"
-        class="border-2 rounded dark:bg-gray-500/50 dark:text-white dark:border-gray-700/30 p-1"
+        class="border-2 rounded dark:bg-gray-500/50 dark:text-white dark:border-gray-700/30 p-1 outline-cyan-500"
       >
         <option v-for="m in models" :key="m.model" :value="m.model">{{ m.name }}</option>
       </select>
@@ -96,7 +96,7 @@ const openInfo = (): void => {
       <span class="mr-2">system prompt:</span>
       <input
         v-model="systemPrompt"
-        class="border-2 rounded dark:bg-gray-500/50 dark:text-white dark:border-gray-700/30 p-1"
+        class="border-2 rounded dark:bg-gray-500/50 dark:text-white dark:border-gray-700/30 p-1 outline-cyan-500"
       />
     </div>
     <span v-else>create for Ollama</span>
