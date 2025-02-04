@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import TabBar from './components/TabBar/TabBar.vue'
 import ChatItem from './components/ChatItem/ChatItem.vue'
-import { reactive, ref } from 'vue'
+import { reactive, ref, nextTick } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { Ollama } from 'ollama/browser'
 
@@ -32,18 +32,23 @@ const chat = async (): void => {
     me: true,
     msg: text.value
   })
-  body.value.lastElementChild.scrollIntoView()
+  
+  await nextTick(() => {
+    body.value.scrollTo({
+      top: body.value.scrollHeight,
+      behavior: 'smooth'
+    })
+  })
 
   const apiLink = ref(localStorage.getItem('key'))
   const ollama = new Ollama({ host: apiLink.value })
 
   const oldMeText = text.value
 
-  setTimeout(() => {
-    body.value.lastElementChild.scrollIntoView()
+  await nextTick(() => {
     inputDisabled.value = true
     text.value = t('getting')
-  }, 100)
+  })
 
   const model = localStorage.getItem('model')
   systemPro = localStorage.getItem('sysPro')
@@ -63,10 +68,23 @@ const chat = async (): void => {
     me: false,
     msg: ''
   })
+  
+  await nextTick(() => {
+    body.value.scrollTo({
+      top: body.value.scrollHeight,
+      behavior: 'smooth'
+    })
+  })
+
   for await (const part of response) {
     useMsg.value += part.message.content
     chatList[chatList.length - 1].msg = useMsg.value
-    body.value.lastElementChild.scrollIntoView()
+    await nextTick(() => {
+      body.value.scrollTo({
+        top: body.value.scrollHeight,
+        behavior: 'smooth'
+      })
+    })
   }
   oldList.push({ role: 'assistant', content: useMsg.value })
   text.value = ''
